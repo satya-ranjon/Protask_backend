@@ -1,10 +1,14 @@
 const mongoose = require("mongoose");
 
 const tagSchema = new mongoose.Schema({
-  name: {
+  tag: {
     type: String,
     required: true,
     trim: true,
+  },
+  userId: {
+    type: String,
+    required: true,
   },
 });
 

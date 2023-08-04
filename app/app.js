@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const userRoutes = require("../routers/userRoutes");
 const taskRoutes = require("../routers/taskRoutes");
+const tagsRoutes = require("../routers/tagsRoutes");
 const {
   catchAllUndefinedRoutes,
   globalErrorHandler,
@@ -19,6 +20,7 @@ app.use("/api/users/", userRoutes);
 
 app.use(isAuthenticated);
 app.use("/api/task", taskRoutes);
+app.use("/api/tags", tagsRoutes);
 
 // handling undefined routes
 app.use(catchAllUndefinedRoutes);
