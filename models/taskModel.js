@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
-    owner: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -18,11 +18,12 @@ const taskSchema = new mongoose.Schema(
     },
     tags: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tags",
+        type: String,
+        required: true,
+        trim: true,
       },
     ],
-    members: [
+    assignedUsers: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

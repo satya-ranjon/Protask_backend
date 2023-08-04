@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema(
   {
     avatar: {
       type: String,
+      default: undefined,
     },
     name: {
       type: String,
@@ -31,6 +32,10 @@ const userSchema = new mongoose.Schema(
     verified: {
       type: Boolean,
       default: false,
+    },
+    task: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Task",
     },
   },
   { timestamps: true }

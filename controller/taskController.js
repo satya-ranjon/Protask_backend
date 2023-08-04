@@ -1,26 +1,64 @@
 const taskService = require("../services/taskService");
 
 /**
- * Controller function for creating a new task.
- * @param {import('express').Request} req - The Express request object containing the task data in the request body.
- * @param {import('express').Response} res - The Express response object to send the response back to the client.
- * @param {import('express').NextFunction} next - The Express next middleware function to handle errors.
+ * Create a new task for the authenticated user.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {function} next - The next middleware function.
  * @returns {Promise<void>}
  */
 const taskCreate = async (req, res, next) => {
   try {
-    // Attempt to create a new task by calling the `createTask` function from the taskService module and passing the request  as a parameter.
-    const task = await taskService.createTask(req);
+    // Extract the userId from the authenticated user's request object
+    const { _id: userId } = req.user;
 
-    // If the task creation is successful, respond with a 200 status and a JSON object containing a success message and the newly created task data.
+    // Extract task data from the request body
+    const { name, description, tags, assignedUsers, status } = req.body;
+
+    // Call the taskService to create a new task
+    const task = await taskService.createTask(
+      userId,
+      name,
+      description,
+      tags,
+      assignedUsers,
+      status
+    );
+
+    // Respond with a success message and the created task
     res.status(200).json({
       status: "success",
       message: "Task created successfully!",
-      task, // The task object returned from the `createTask` function.
+      task,
     });
   } catch (err) {
-    // If an error occurs during task creation, pass the error to the next middleware (error handling middleware) using the `next` function.
+    // Pass any errors to the error-handling middleware
     next(err);
+  }
+};
+
+/**
+ * Get all tasks associated with the authenticated user.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise<void>}
+ */
+const getAllTask = async (req, res, next) => {
+  try {
+    // Extract the userId from the authenticated user's request object
+    const userId = req.user._id;
+
+    // Call the taskService to fetch all tasks associated with the user
+    const tasks = await taskService.getAllTask(userId);
+
+    // Respond with the array of tasks
+    res.status(200).json(tasks);
+  } catch (error) {
+    // Pass any errors to the error-handling middleware
+    next(error);
   }
 };
 
@@ -32,4 +70,4 @@ const taskUpdate = async (req, res, next) => {
   }
 };
 
-module.exports = { taskCreate, taskUpdate };
+module.exports = { taskCreate, getAllTask, taskUpdate };
