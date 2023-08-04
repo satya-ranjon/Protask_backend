@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema(
   {
     avatar: {
       type: String,
-      default: "default-avatar.jpg",
     },
     name: {
       type: String,
