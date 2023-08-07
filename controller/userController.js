@@ -12,13 +12,13 @@ const registerUser = async (req, res, next) => {
     const { name, email, password } = req.body;
 
     // Call the userService.registerUser function to handle user registration
-    const newUser = await userService.registerUser(name, email, password);
+    const user = await userService.registerUser(name, email, password);
 
     // Send a success response with the newly registered user data
     res.status(201).json({
       status: "success",
       message: "User registered successfully!",
-      data: newUser,
+      ...user,
     });
   } catch (err) {
     // Pass the error to the next middleware for centralized error handling

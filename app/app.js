@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const authRoutes = require("../routers/authRoutes");
 const userRoutes = require("../routers/userRoutes");
 const taskRoutes = require("../routers/taskRoutes");
 const tagsRoutes = require("../routers/tagsRoutes");
@@ -18,9 +19,10 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173" }));
 
 // Define routes
-app.use("/api/users/", userRoutes);
+app.use("/api/auth/", authRoutes);
 
 app.use(isAuthenticated);
+app.use("/api/users/", userRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/tags", tagsRoutes);
 
