@@ -13,18 +13,8 @@ const taskCreate = async (req, res, next) => {
     // Extract the userId from the authenticated user's request object
     const { _id: userId } = req.user;
 
-    // Extract task data from the request body
-    const { name, description, tags, assignedUsers, status } = req.body;
-
     // Call the taskService to create a new task
-    const task = await taskService.createTask(
-      userId,
-      name,
-      description,
-      tags,
-      assignedUsers,
-      status
-    );
+    const task = await taskService.createTask(userId);
 
     // Respond with a success message and the created task
     res.status(200).json({
@@ -62,12 +52,30 @@ const getAllTask = async (req, res, next) => {
   }
 };
 
-const taskUpdate = async (req, res, next) => {
+const getTask = async (req, res, next) => {
   try {
-    console.log(req);
+    const taskId = req.params.taskId;
+
+    const task = await taskService.getTask(taskId);
+
+    // Respond with the array of tasks
+    res.status(200).json(task);
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { taskCreate, getAllTask, taskUpdate };
+const taskUpdate = async (req, res, next) => {
+  try {
+    const taskId = req.params.taskId;
+    const data = req.body;
+    const task = await taskService.taskUpdate(taskId, data);
+
+    // Respond with the array of tasks
+    res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { taskCreate, getTask, getAllTask, taskUpdate };

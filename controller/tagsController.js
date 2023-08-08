@@ -27,7 +27,7 @@ const deleteTag = async (req, res, next) => {
     const message = await tagsService.deleteTag(req.user._id, tagIdToDelete);
 
     // Respond with the created tag data
-    res.status(200).json({ message });
+    res.status(200).json({ ...message });
   } catch (err) {
     // Pass any errors that occur during the process to the next error-handling middleware
     next(err);

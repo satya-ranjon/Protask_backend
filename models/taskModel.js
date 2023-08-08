@@ -2,25 +2,26 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     name: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
     description: {
       type: String,
       trim: true,
+      default: "",
     },
     tags: [
       {
-        type: String,
-        required: true,
-        trim: true,
+        id: String,
+        name: String,
+        color: String,
       },
     ],
     assignedUsers: [
@@ -31,8 +32,8 @@ const taskSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      enum: ["start", "inprogress", "onhold", "done"],
-      default: "start",
+      enum: ["Start", "In Process", "On Hold", "Done"],
+      default: "Start",
     },
   },
   { timestamps: true }

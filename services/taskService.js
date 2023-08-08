@@ -13,28 +13,11 @@ const Task = require("../models/taskModel");
  * @returns {Promise<Object>} The saved task object.
  * @throws {AppError} If the task name is not provided or an error occurs during the process.
  */
-const createTask = async (
-  userId,
-  name,
-  description,
-  tags,
-  assignedUsers,
-  status
-) => {
+const createTask = async (userId) => {
   try {
-    // Check if the task name is provided
-    if (!name) {
-      throw new AppError("Task Name is required", 400);
-    }
-
     // Create a new Task instance with the provided data
     const newTask = new Task({
-      userId: userId,
-      name: name,
-      description: description,
-      tags: tags,
-      assignedUsers: assignedUsers,
-      status: status,
+      user: userId,
     });
 
     // Save the new task to the database
@@ -43,12 +26,10 @@ const createTask = async (
     // Return the saved task object
     return savedTask;
   } catch (error) {
-    // Handle any errors that occur during the process
+    // Handle errors
     if (error instanceof AppError) {
-      // If the error is already an instance of AppError, rethrow it
       throw error;
     } else {
-      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
       throw new AppError(
         "Failed to create the task. Please try again later.",
         500
@@ -68,7 +49,7 @@ const getAllTask = async (userId) => {
   try {
     // Find all tasks associated with the provided userId, including tasks where the user is assigned
     const tasks = await Task.find({
-      $or: [{ userId: userId }, { assignedUsers: userId }],
+      $or: [{ user: userId }, { assignedUsers: userId }],
     })
       .populate("assignedUsers", "avatar name email")
       .populate("userId", "avatar name email");
@@ -76,15 +57,49 @@ const getAllTask = async (userId) => {
     // Return the array of tasks
     return tasks;
   } catch (error) {
-    // Handle any errors that occur during the process
+    // Handle errors
     if (error instanceof AppError) {
-      // If the error is already an instance of AppError, rethrow it
       throw error;
     } else {
-      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
       throw new AppError("Failed to fetch tasks. Please try again later.", 500);
     }
   }
 };
 
-module.exports = { createTask, getAllTask };
+const getTask = async (taskId) => {
+  try {
+    const task = await Task.findById(taskId)
+      .populate("assignedUsers", "avatar name email")
+      .populate("user", "avatar name email");
+    return task;
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      throw error;
+    } else {
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+const taskUpdate = async (taskId, data) => {
+  try {
+    const task = await Task.findById(taskId);
+    task.name = data.name || task.name;
+    task.description = data.description || task.description;
+    task.tags = data.tags || task.tags;
+    task.assignedUsers = data.assignedUsers || task.assignedUsers;
+    task.status = data.status || task.status;
+    const saveTask = await task.save();
+    return saveTask;
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      throw error;
+    } else {
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+module.exports = { createTask, getAllTask, getTask, taskUpdate };

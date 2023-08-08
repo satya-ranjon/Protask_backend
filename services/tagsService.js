@@ -11,21 +11,20 @@ const uuid = require("uuid");
  * @throws {AppError} If an error occurs during the process.
  */
 const createTags = async (id, data) => {
-  console.log(data);
   try {
     // Create a new Tags instance with the provided tag and userId
     const user = await User.findById(id);
 
     // Generate a unique ID for the new tag
     const tagId = uuid.v4();
-
-    user.tags.push({ id: tagId, name: data.name, color: data.color });
+    const newTag = { id: data.id || tagId, name: data.name, color: data.color };
+    user.tags.push(newTag);
 
     // Save the new tag to the database
-    const savedTag = await user.save();
+    await user.save();
 
     // Return the saved tag
-    return savedTag.tags;
+    return newTag;
   } catch (error) {
     // Handle errors
     if (error instanceof AppError) {
