@@ -10,10 +10,24 @@ const tagsService = require("../services/tagsService");
 const createTags = async (req, res, next) => {
   try {
     // Call the tagsService.createTags function to create a new tag for the user
-    const tags = await tagsService.createTags(req.user._id, res.body.tag);
+    const tags = await tagsService.createTags(req.user._id, req.body);
 
     // Respond with the created tag data
     res.status(200).json(tags);
+  } catch (err) {
+    // Pass any errors that occur during the process to the next error-handling middleware
+    next(err);
+  }
+};
+
+const deleteTag = async (req, res, next) => {
+  try {
+    const tagIdToDelete = req.params.tagId;
+    // Call the tagsService.createTags function to create a new tag for the user
+    const message = await tagsService.deleteTag(req.user._id, tagIdToDelete);
+
+    // Respond with the created tag data
+    res.status(200).json({ message });
   } catch (err) {
     // Pass any errors that occur during the process to the next error-handling middleware
     next(err);
@@ -40,4 +54,4 @@ const getAllTags = async (req, res, next) => {
   }
 };
 
-module.exports = { createTags, getAllTags };
+module.exports = { createTags, deleteTag, getAllTags };

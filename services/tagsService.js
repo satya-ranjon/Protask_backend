@@ -1,5 +1,6 @@
-const Tags = require("../models/tagModel");
+const User = require("../models/userModel");
 const AppError = require("../utils/AppError");
+const uuid = require("uuid");
 
 /**
  * Create a new tag for a user.
@@ -9,23 +10,65 @@ const AppError = require("../utils/AppError");
  * @returns {Promise<Object>} The saved tag object.
  * @throws {AppError} If an error occurs during the process.
  */
-const createTags = async (id, tag) => {
+const createTags = async (id, data) => {
+  console.log(data);
   try {
     // Create a new Tags instance with the provided tag and userId
-    const newTag = new Tags({ tag, userId: id });
+    const user = await User.findById(id);
+
+    // Generate a unique ID for the new tag
+    const tagId = uuid.v4();
+
+    user.tags.push({ id: tagId, name: data.name, color: data.color });
 
     // Save the new tag to the database
-    const savedTag = await newTag.save();
+    const savedTag = await user.save();
 
     // Return the saved tag
-    return savedTag;
+    return savedTag.tags;
   } catch (error) {
-    // Handle any errors that occur during the process
+    // Handle errors
     if (error instanceof AppError) {
-      // If the error is already an instance of AppError, rethrow it
       throw error;
     } else {
-      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+/**
+ * Delete a tag from the user's tags array.
+ *
+ * @param {string} userId - The ID of the user whose tag is being deleted.
+ * @param {string} tagId - The ID of the tag to be deleted.
+ * @returns {Promise<{ message: string }>} A promise that resolves to an object containing a message.
+ * @throws {AppError} If there is an error during the deletion process.
+ */
+const deleteTag = async (userId, tagId) => {
+  try {
+    // Find the user by id
+    const user = await User.findById(userId);
+
+    // Find the index of the tag with the specified ID
+    const tagIndex = user.tags.findIndex((tag) => tag.id === tagId);
+
+    if (tagIndex !== -1) {
+      // Remove the tag from the user's tags array
+      user.tags.splice(tagIndex, 1);
+
+      // Save the updated user to the database
+      await user.save();
+
+      return { message: "Tag deleted successfully" };
+    } else {
+      // Return a message indicating that the tag was not found
+      return { message: "Tag not found" };
+    }
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      throw error;
+    } else {
       throw new AppError("Something went wrong. Please try again later.", 500);
     }
   }
@@ -41,20 +84,18 @@ const createTags = async (id, tag) => {
 const getAllTags = async (id) => {
   try {
     // Find all tags associated with the provided userId
-    const allTags = await Tags.find({ userId: id });
+    const user = await User.findById(id);
 
     // Return the array of tags
-    return allTags;
+    return user.tags;
   } catch (error) {
-    // Handle any errors that occur during the process
+    // Handle errors
     if (error instanceof AppError) {
-      // If the error is already an instance of AppError, rethrow it
       throw error;
     } else {
-      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
       throw new AppError("Something went wrong. Please try again later.", 500);
     }
   }
 };
 
-module.exports = { createTags, getAllTags };
+module.exports = { createTags, deleteTag, getAllTags };

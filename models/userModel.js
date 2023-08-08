@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
   {
     avatar: {
       type: String,
-      default: undefined,
+      default: "",
     },
     name: {
       type: String,
@@ -33,6 +33,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    tags: [
+      {
+        id: String,
+        name: String,
+        color: String,
+      },
+    ],
     task: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Task",

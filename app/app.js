@@ -23,8 +23,8 @@ app.use("/api/auth/", authRoutes);
 
 app.use(isAuthenticated);
 app.use("/api/users/", userRoutes);
-app.use("/api/task", taskRoutes);
-app.use("/api/tags", tagsRoutes);
+app.use("/api/task/", taskRoutes);
+app.use("/api/tags/", tagsRoutes);
 
 // handling undefined routes
 app.use(catchAllUndefinedRoutes);
