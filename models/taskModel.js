@@ -12,11 +12,7 @@ const taskSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
-    description: {
-      type: String,
-      trim: true,
-      default: "",
-    },
+    description: [],
     tags: [
       {
         id: String,
@@ -36,6 +32,7 @@ const taskSchema = new mongoose.Schema(
       default: "Start",
     },
   },
+  { minimize: false },
   { timestamps: true }
 );
 

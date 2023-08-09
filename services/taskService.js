@@ -52,7 +52,7 @@ const getAllTask = async (userId) => {
       $or: [{ user: userId }, { assignedUsers: userId }],
     })
       .populate("assignedUsers", "avatar name email")
-      .populate("userId", "avatar name email");
+      .populate("user", "avatar name email");
 
     // Return the array of tasks
     return tasks;

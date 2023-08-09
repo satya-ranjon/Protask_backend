@@ -44,6 +44,7 @@ const userProfile = async (_id) => {
  * @throws {AppError} If any other error occurs during the process, a generic error with a 500 status will be thrown.
  */
 const profileUpdate = async (id, data) => {
+  console.log(data);
   try {
     // Find the user in the database by the provided ID
     const user = await User.findById(id);
@@ -58,6 +59,7 @@ const profileUpdate = async (id, data) => {
     // Update user properties with the provided data or keep the existing value if data is not provided
     user.name = data.name || user.name;
     user.email = data.email || user.email;
+    user.avatar = data.avatar || user.avatar;
 
     // Save the updated user information back to the database
     const updateInfo = await user.save();
