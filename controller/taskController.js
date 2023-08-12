@@ -78,4 +78,13 @@ const taskUpdate = async (req, res, next) => {
   }
 };
 
-module.exports = { taskCreate, getTask, getAllTask, taskUpdate };
+const deleteTask = async (req, res, next) => {
+  try {
+    const taskId = req.params.taskId;
+    const message = await taskService.deleteTask(taskId);
+    res.status(200).json(message);
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = { taskCreate, getTask, getAllTask, taskUpdate, deleteTask };

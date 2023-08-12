@@ -32,8 +32,10 @@ const taskSchema = new mongoose.Schema(
       default: "Start",
     },
   },
-  { minimize: false },
-  { timestamps: true }
+  {
+    timestamps: true,
+    minimize: false,
+  }
 );
 
 const Task = mongoose.model("Task", taskSchema);

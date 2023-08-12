@@ -1,5 +1,6 @@
 const AppError = require("../utils/AppError");
 const Task = require("../models/taskModel");
+const uuid = require("uuid");
 
 /**
  * Create a new task for a user.
@@ -15,9 +16,23 @@ const Task = require("../models/taskModel");
  */
 const createTask = async (userId) => {
   try {
+    const descId = uuid.v4();
     // Create a new Task instance with the provided data
     const newTask = new Task({
       user: userId,
+      description: [
+        {
+          id: descId,
+          type: "paragraph",
+          props: {
+            textColor: "default",
+            backgroundColor: "default",
+            textAlignment: "left",
+          },
+          content: [],
+          children: [],
+        },
+      ],
     });
 
     // Save the new task to the database
@@ -89,7 +104,7 @@ const taskUpdate = async (taskId, data) => {
     task.description = data.description || task.description;
     task.tags = data.tags || task.tags;
     task.assignedUsers = data.assignedUsers || task.assignedUsers;
-    task.status = data.status || task.status;
+    task.status = data.status || "Start";
     const saveTask = await task.save();
     return saveTask;
   } catch (error) {
@@ -102,4 +117,18 @@ const taskUpdate = async (taskId, data) => {
   }
 };
 
-module.exports = { createTask, getAllTask, getTask, taskUpdate };
+const deleteTask = async (taskId) => {
+  try {
+    await Task.findByIdAndDelete(taskId);
+    return { message: "Delete Successfully" };
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      throw error;
+    } else {
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+module.exports = { createTask, getAllTask, getTask, taskUpdate, deleteTask };
