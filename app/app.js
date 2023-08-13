@@ -16,7 +16,7 @@ dotenv.config();
 
 // Middleware
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: process.env.CORS_URL }));
 
 // Define routes
 app.use("/api/auth/", authRoutes);
