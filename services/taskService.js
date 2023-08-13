@@ -14,12 +14,17 @@ const uuid = require("uuid");
  * @returns {Promise<Object>} The saved task object.
  * @throws {AppError} If the task name is not provided or an error occurs during the process.
  */
-const createTask = async (userId) => {
+const createTask = async (user) => {
   try {
     const descId = uuid.v4();
     // Create a new Task instance with the provided data
     const newTask = new Task({
-      user: userId,
+      user: {
+        userId: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
       description: [
         {
           id: descId,
@@ -64,10 +69,8 @@ const getAllTask = async (userId) => {
   try {
     // Find all tasks associated with the provided userId, including tasks where the user is assigned
     const tasks = await Task.find({
-      $or: [{ user: userId }, { assignedUsers: userId }],
-    })
-      .populate("assignedUsers", "avatar name email")
-      .populate("user", "avatar name email");
+      $or: [{ "user.userId": userId }, { "assignedUsers.userId": userId }],
+    });
 
     // Return the array of tasks
     return tasks;

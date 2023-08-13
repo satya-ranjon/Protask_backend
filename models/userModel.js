@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema(
   {
     avatar: {
       type: String,
-      default: "",
+      default:
+        "https://res.cloudinary.com/dcpbu1ffy/image/upload/v1664309906/f/images/profile/profile_ob28l3.webp",
     },
     name: {
       type: String,

@@ -3,9 +3,10 @@ const mongoose = require("mongoose");
 const taskSchema = new mongoose.Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      userId: String,
+      name: String,
+      avatar: String,
+      email: String,
     },
     name: {
       type: String,
@@ -22,8 +23,10 @@ const taskSchema = new mongoose.Schema(
     ],
     assignedUsers: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        userId: String,
+        name: String,
+        avatar: String,
+        email: String,
       },
     ],
     status: {

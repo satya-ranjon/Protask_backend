@@ -11,10 +11,10 @@ const taskService = require("../services/taskService");
 const taskCreate = async (req, res, next) => {
   try {
     // Extract the userId from the authenticated user's request object
-    const { _id: userId } = req.user;
+    const user = req.user;
 
     // Call the taskService to create a new task
-    const task = await taskService.createTask(userId);
+    const task = await taskService.createTask(user);
 
     // Respond with a success message and the created task
     res.status(200).json({
