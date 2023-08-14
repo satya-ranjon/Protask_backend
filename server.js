@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const app = require("./app/app");
 
+mongoose.set("strictQuery", true);
+
 const PORT = process.env.PORT || 5000;
 const DATABASE_URL = process.env.DATABASE_URL;
 
