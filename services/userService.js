@@ -56,6 +56,13 @@ const profileUpdate = async (id, data) => {
       );
     }
 
+    if (data.email) {
+      const findEmailUser = await User.findOne({ email: data.email });
+      if (findEmailUser) {
+        throw new AppError("This Email already register", 404);
+      }
+    }
+
     // Update user properties with the provided data or keep the existing value if data is not provided
     user.name = data.name || user.name;
     user.email = data.email || user.email;
