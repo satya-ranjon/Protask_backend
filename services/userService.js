@@ -44,12 +44,10 @@ const userProfile = async (_id) => {
  * @throws {AppError} If any other error occurs during the process, a generic error with a 500 status will be thrown.
  */
 const profileUpdate = async (id, data) => {
-  console.log(data);
   try {
     // Find the user in the database by the provided ID
     const user = await User.findById(id);
     if (!user) {
-      // If the user is not found, throw a custom AppError with a 404 status
       throw new AppError(
         "User not found. Please check the provided ID or register for a new account.",
         404
@@ -57,9 +55,10 @@ const profileUpdate = async (id, data) => {
     }
 
     if (data.email) {
+      // Check if the provided email is already registered
       const findEmailUser = await User.findOne({ email: data.email });
       if (findEmailUser) {
-        throw new AppError("This Email already register", 404);
+        throw new AppError("This Email already registered", 404);
       }
     }
 

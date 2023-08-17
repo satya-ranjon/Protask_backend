@@ -22,7 +22,7 @@ app.use(cors({ origin: process.env.CORS_URL }));
 app.use("/api/auth/", authRoutes);
 
 app.use(isAuthenticated);
-app.use("/api/users/", userRoutes);
+app.use("/api/user/", userRoutes);
 app.use("/api/task/", taskRoutes);
 app.use("/api/tags/", tagsRoutes);
 
