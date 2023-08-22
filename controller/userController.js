@@ -1,4 +1,11 @@
+const uploadPicture = require("../middleware/multerHandleProfilePicture");
+const User = require("../models/userModel");
+const {
+  uploadImage,
+  deleteImageFromCloudinary,
+} = require("../services/cloudinaryService");
 const userService = require("../services/userService");
+const removeRsUnDataFormUser = require("../utils/removeRsUnDataFormUser");
 
 /**
  * Register a new user.
@@ -116,10 +123,63 @@ const passwordUpdate = async (req, res, next) => {
   }
 };
 
+const profilePictureUpdate = (req, res, next) => {
+  try {
+    uploadPicture.single("profilePicture")(req, res, async (err) => {
+      if (err) {
+        // If there's an error during file upload, pass it to the error handling middleware
+        return next(err);
+      }
+      const userId = req.user._id;
+      const user = await User.findById(userId);
+
+      const oldPublicId64 = user.avatar["64"].public_id;
+      const oldPublicId200 = user.avatar["200"].public_id;
+      console.log(oldPublicId64);
+      console.log(oldPublicId200);
+
+      if (oldPublicId64) {
+        await deleteImageFromCloudinary(oldPublicId64);
+      }
+      if (oldPublicId200) {
+        await deleteImageFromCloudinary(oldPublicId200);
+      }
+
+      // Upload image with dimensions 64*64
+      const avater64 = await uploadImage(req.file.buffer, 64, 64);
+      const newAvaterURL64 = avater64.secure_url;
+      const newPublicId64 = avater64.public_id;
+
+      // Upload image with dimensions 200*200
+      const avater200 = await uploadImage(req.file.buffer, 200, 200);
+      const newAvaterURL200 = avater200.secure_url;
+      const newPublicId200 = avater200.public_id;
+
+      user.avatar = {
+        64: {
+          url: newAvaterURL64,
+          public_id: newPublicId64,
+        },
+        200: {
+          url: newAvaterURL200,
+          public_id: newPublicId200,
+        },
+      };
+
+      const updateInfo = await user.save();
+
+      res.status(200).json(removeRsUnDataFormUser(updateInfo));
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   userProfile,
   profileUpdate,
   passwordUpdate,
+  profilePictureUpdate,
 };

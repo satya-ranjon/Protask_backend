@@ -3,10 +3,24 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     avatar: {
-      type: String,
-      default:
-        "https://res.cloudinary.com/dcpbu1ffy/image/upload/v1664309906/f/images/profile/profile_ob28l3.webp",
+      64: {
+        url: {
+          type: String,
+          default:
+            "https://res.cloudinary.com/dcpbu1ffy/image/upload/v1664309906/f/images/profile/profile_ob28l3.webp",
+        },
+        public_id: String,
+      },
+      200: {
+        url: {
+          type: String,
+          default:
+            "https://res.cloudinary.com/dcpbu1ffy/image/upload/v1664309906/f/images/profile/profile_ob28l3.webp",
+        },
+        public_id: String,
+      },
     },
+
     name: {
       type: String,
       required: true,
