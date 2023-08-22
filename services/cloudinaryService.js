@@ -1,12 +1,21 @@
 const cloudinary = require("cloudinary").v2;
 
+// Initialize Cloudinary with environment variables
 cloudinary.config({
-  cloud_name: "dcpbu1ffy",
-  api_key: "292711678397456",
-  api_secret: "dUNmk-A3RBhIBoIvk24ef6-piNo",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Function to upload an image to Cloudinary with specified dimensions
+/**
+ * Uploads an image to Cloudinary with specified dimensions.
+ *
+ * @param {Buffer} buffer - The image buffer to upload.
+ * @param {number} width - The desired width of the uploaded image.
+ * @param {number} height - The desired height of the uploaded image.
+ * @returns {Promise<object>} - A Promise that resolves with the Cloudinary upload result.
+ */
+
 const uploadImage = async (buffer, width, height) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader
@@ -24,7 +33,13 @@ const uploadImage = async (buffer, width, height) => {
   });
 };
 
-// Function to delete an image from Cloudinary
+/**
+ * Deletes an image from Cloudinary by its public ID.
+ *
+ * @param {string} publicId - The public ID of the image to delete.
+ * @returns {Promise<void>} - A Promise that resolves when the image is successfully deleted.
+ */
+
 const deleteImageFromCloudinary = async (publicId) => {
   try {
     await cloudinary.uploader.destroy(publicId);
@@ -34,4 +49,5 @@ const deleteImageFromCloudinary = async (publicId) => {
     throw error;
   }
 };
+
 module.exports = { uploadImage, deleteImageFromCloudinary };

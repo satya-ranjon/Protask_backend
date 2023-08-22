@@ -123,21 +123,33 @@ const passwordUpdate = async (req, res, next) => {
   }
 };
 
+/**
+ * Update Profile Picture
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise<void>}
+ */
 const profilePictureUpdate = (req, res, next) => {
   try {
+    // Upload the profile picture using the multer middleware
     uploadPicture.single("profilePicture")(req, res, async (err) => {
       if (err) {
         // If there's an error during file upload, pass it to the error handling middleware
         return next(err);
       }
+
+      // Get the user ID from the request
       const userId = req.user._id;
+
+      // Fetch the user data from the database using the user ID
       const user = await User.findById(userId);
 
+      // Get the public IDs of the user's existing profile pictures
       const oldPublicId64 = user.avatar["64"].public_id;
       const oldPublicId200 = user.avatar["200"].public_id;
-      console.log(oldPublicId64);
-      console.log(oldPublicId200);
 
+      // Delete the old profile pictures from Cloudinary if they exist
       if (oldPublicId64) {
         await deleteImageFromCloudinary(oldPublicId64);
       }
@@ -155,6 +167,7 @@ const profilePictureUpdate = (req, res, next) => {
       const newAvaterURL200 = avater200.secure_url;
       const newPublicId200 = avater200.public_id;
 
+      // Update the user's avatar data in the user object
       user.avatar = {
         64: {
           url: newAvaterURL64,
@@ -166,11 +179,14 @@ const profilePictureUpdate = (req, res, next) => {
         },
       };
 
+      // Save the updated user information to the database
       const updateInfo = await user.save();
 
+      // Respond with the updated user data without sensitive information
       res.status(200).json(removeRsUnDataFormUser(updateInfo));
     });
   } catch (error) {
+    // If an error occurs during the process, pass it to the error handling middleware
     next(error);
   }
 };
