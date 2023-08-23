@@ -131,9 +131,9 @@ const passwordUpdate = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const profilePictureUpdate = (req, res, next) => {
-  try {
-    // Upload the profile picture using the multer middleware
-    uploadPicture.single("profilePicture")(req, res, async (err) => {
+  // Upload the profile picture using the multer middleware
+  uploadPicture.single("profilePicture")(req, res, async (err) => {
+    try {
       if (err) {
         // If there's an error during file upload, pass it to the error handling middleware
         return next(err);
@@ -184,11 +184,11 @@ const profilePictureUpdate = (req, res, next) => {
 
       // Respond with the updated user data without sensitive information
       res.status(200).json(removeRsUnDataFormUser(updateInfo));
-    });
-  } catch (error) {
-    // If an error occurs during the process, pass it to the error handling middleware
-    next(error);
-  }
+    } catch (error) {
+      // If an error occurs during the process, pass it to the error handling middleware
+      next(error);
+    }
+  });
 };
 
 module.exports = {

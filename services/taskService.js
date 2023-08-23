@@ -19,12 +19,7 @@ const createTask = async (user) => {
     const descId = uuid.v4();
     // Create a new Task instance with the provided data
     const newTask = new Task({
-      user: {
-        userId: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-      },
+      user: user._id,
       description: [
         {
           id: descId,
@@ -43,9 +38,15 @@ const createTask = async (user) => {
     // Save the new task to the database
     const savedTask = await newTask.save();
 
+    const populatedTask = await Task.findById(savedTask._id)
+      .populate("user", "name email avatar _id")
+      .populate("assignedUsers", "name email avatar _id")
+      .exec();
+
     // Return the saved task object
-    return savedTask;
+    return populatedTask;
   } catch (error) {
+    console.log(error);
     // Handle errors
     if (error instanceof AppError) {
       throw error;

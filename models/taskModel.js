@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const taskSchema = new mongoose.Schema(
   {
     user: {
-      userId: String,
-      name: String,
-      avatar: String,
-      email: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
+
     name: {
       type: String,
       trim: true,
@@ -23,10 +23,8 @@ const taskSchema = new mongoose.Schema(
     ],
     assignedUsers: [
       {
-        userId: String,
-        name: String,
-        avatar: String,
-        email: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
     status: {

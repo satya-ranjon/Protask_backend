@@ -1,6 +1,8 @@
+require("dotenv").config();
 const cloudinary = require("cloudinary").v2;
 
 // Initialize Cloudinary with environment variables
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -43,9 +45,7 @@ const uploadImage = async (buffer, width, height) => {
 const deleteImageFromCloudinary = async (publicId) => {
   try {
     await cloudinary.uploader.destroy(publicId);
-    console.log(`Image with public ID ${publicId} deleted from Cloudinary.`);
   } catch (error) {
-    console.error("Error deleting image from Cloudinary:", error);
     throw error;
   }
 };
