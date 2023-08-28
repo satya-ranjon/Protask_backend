@@ -74,4 +74,28 @@ const updateEvent = async (data, eventId) => {
   }
 };
 
-module.exports = { createEvent, updateEvent };
+/**
+ * Delete an event by its ID.
+ * @param {string} id - ID of the event to delete.
+ * @returns {Promise<Object>} - A message confirming successful deletion.
+ */
+const deleteEvent = async (id) => {
+  try {
+    // Use findByIdAndDelete to remove the event by its ID
+    const event = await Event.findByIdAndDelete(id);
+
+    if (event) {
+      return { message: "Event deleted successfully" };
+    }
+    return { message: "Event already deleted" };
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      throw error; // Re-throw custom AppError for expected errors
+    } else {
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+module.exports = { createEvent, updateEvent, deleteEvent };
