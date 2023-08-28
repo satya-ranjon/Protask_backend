@@ -15,3 +15,5 @@ function validateTime(timeStr) {
 
   return true;
 }
+
+module.exports = validateTime;
