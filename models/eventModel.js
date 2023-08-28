@@ -4,15 +4,9 @@ const eventSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String },
-    date: { type: Date, required: true },
-    starttime: {
-      hour: { type: Number, required: true },
-      minute: { type: Number, required: true },
-    },
-    endtime: {
-      hour: { type: Number, required: true },
-      minute: { type: Number, required: true },
-    },
+    date: { type: String, required: true },
+    starttime: { type: String, required: true },
+    endtime: { type: String },
     sleipner: [
       {
         type: mongoose.Schema.Types.ObjectId,

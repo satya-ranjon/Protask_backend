@@ -9,7 +9,7 @@ const eventService = require("../services/eventService");
 const createEvent = async (req, res, next) => {
   try {
     // Destructure data from the request object
-    const { title, description, date, starttime, endtime, sleipner } = req.data;
+    const { title, description, date, starttime, endtime, sleipner } = req.body;
 
     // Call the eventService to create the event using the provided data
     const event = await eventService.createEvent({

@@ -15,9 +15,9 @@ const createEvent = async (eventData) => {
     const savedEvent = await newEvent.save();
 
     // Populate the event with associated 'sleipner' data
-    const populatedEvent = await savedEvent
+    const populatedEvent = await Event.findById(savedEvent._id)
       .populate("sleipner", "name email avatar _id")
-      .execPopulate();
+      .exec();
 
     return populatedEvent;
   } catch (error) {
