@@ -27,8 +27,9 @@ const validateEventInput = (req, _res, next) => {
     return next(new AppError("Please input valid start Time! 23:59", 400));
 
   // Validate the end time format using the validateTime function
-  if (!validateTime(endtime))
-    return next(new AppError("Please input valid end Time! 23:59", 400));
+  if (endtime)
+    if (!validateTime(endtime))
+      return next(new AppError("Please input valid end Time! 23:59", 400));
 
   // If all validations pass, move on to the next middleware
   next();
