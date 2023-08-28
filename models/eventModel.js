@@ -4,7 +4,7 @@ const eventSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String },
-    day: { type: Date, required: true },
+    date: { type: Date, required: true },
     starttime: {
       hour: { type: Number, required: true },
       minute: { type: Number, required: true },
@@ -13,6 +13,12 @@ const eventSchema = new mongoose.Schema(
       hour: { type: Number, required: true },
       minute: { type: Number, required: true },
     },
+    sleipner: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,
