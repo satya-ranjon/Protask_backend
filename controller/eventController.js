@@ -29,4 +29,27 @@ const createEvent = async (req, res, next) => {
   }
 };
 
-module.exports = { createEvent };
+const updateEvent = async (req, res, next) => {
+  try {
+    const eventIdToDelete = req.params.eventId;
+
+    const { title, description, date, starttime, endtime, sleipner } = req.body;
+    const event = await eventService.updateEvent(
+      {
+        title,
+        description,
+        date,
+        starttime,
+        endtime,
+        sleipner,
+      },
+      eventIdToDelete
+    );
+
+    res.status(201).json(event);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createEvent, updateEvent };
