@@ -98,4 +98,45 @@ const deleteEvent = async (id) => {
   }
 };
 
-module.exports = { createEvent, updateEvent, deleteEvent };
+/**
+ * Retrieves events grouped by date for a given user.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<Object>} - An object where keys are dates and values are arrays of events.
+ * @throws {AppError} - If an error occurs during the process.
+ */
+const getEventsGroupedByDate = async (userId) => {
+  try {
+    // Fetch events from the database for the specified user
+    const events = await Event.find({ userId });
+
+    // Group events by date using the reduce() method
+    const eventsGroupedByDate = events.reduce((acc, cur) => {
+      if (!acc[cur.date]) {
+        // to store events for that date
+        acc[cur.date] = [];
+      }
+      // Push the current event into the array corresponding to its date
+      acc[cur.date].push(cur);
+      return acc;
+    }, {});
+
+    // Return the object containing events grouped by date
+    return eventsGroupedByDate;
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      // Re-throw custom AppError for expected errors
+      throw error;
+    } else {
+      // Throw a generic AppError for unexpected errors
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+module.exports = {
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  getEventsGroupedByDate,
+};
