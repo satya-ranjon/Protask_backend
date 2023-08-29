@@ -10,9 +10,10 @@ const createEvent = async (req, res, next) => {
   try {
     // Destructure data from the request object
     const { title, description, date, starttime, endtime, sleipner } = req.body;
-
+    const userId = req.user._id;
     // Call the eventService to create the event using the provided data
     const event = await eventService.createEvent({
+      userId,
       title,
       description,
       date,
@@ -87,4 +88,26 @@ const deleteEvent = async (req, res, next) => {
   }
 };
 
-module.exports = { createEvent, updateEvent, deleteEvent };
+/**
+ * Controller function to retrieve all events grouped by date for a user.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ */
+const getAllEvent = async (req, res, next) => {
+  try {
+    // Extract the user ID from the authenticated user's request
+    const userId = req.user._id;
+
+    // Retrieve events grouped by date using the eventService
+    const events = await eventService.getEventsGroupedByDate(userId);
+
+    // Respond with the grouped events
+    res.status(200).json(events);
+  } catch (error) {
+    // Pass any errors to the error handling middleware
+    next(error);
+  }
+};
+
+module.exports = { createEvent, updateEvent, deleteEvent, getAllEvent };
