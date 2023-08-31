@@ -110,4 +110,20 @@ const getAllEvent = async (req, res, next) => {
   }
 };
 
-module.exports = { createEvent, updateEvent, deleteEvent, getAllEvent };
+const getEvent = async (req, res, next) => {
+  try {
+    const eventId = req.params.eventId;
+    const event = await eventService.getEvent(eventId);
+    res.status(200).json(event);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  getAllEvent,
+  getEvent,
+};

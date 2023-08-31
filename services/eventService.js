@@ -134,9 +134,26 @@ const getEventsGroupedByDate = async (userId) => {
   }
 };
 
+const getEvent = async (eventId) => {
+  try {
+    const event = await Event.findById(eventId);
+    return event;
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      // Re-throw custom AppError for expected errors
+      throw error;
+    } else {
+      // Throw a generic AppError for unexpected errors
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
 module.exports = {
   createEvent,
   updateEvent,
   deleteEvent,
   getEventsGroupedByDate,
+  getEvent,
 };
