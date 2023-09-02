@@ -148,8 +148,94 @@ const passwordUpdate = async (id, newPassword, oldPassword) => {
   }
 };
 
+/**
+ * Add a reference to a sleipnerUser in a user document and return the updated user.
+ * @param {string} userId - The ID of the user to whom the sleipnerUser will be added.
+ * @param {string} sleipnerId - The ID of the sleipnerUser to be added to the user.
+ * @returns {Promise<object>} - A Promise that resolves to the updated user document.
+ * @throws {AppError} If the provided sleipnerUser ID is not found.
+ * @throws {AppError} If an unexpected error occurs during the process.
+ */
+const addSleipner = async (userId, sleipnerId) => {
+  try {
+    // Find the sleipnerUser by its ID
+    const sleipnerUser = await User.findById(sleipnerId);
+
+    // Check if the sleipnerUser is not found
+    if (!sleipnerUser) {
+      throw new AppError(
+        "Sleipner not found. Please check the provided ID",
+        404
+      );
+    }
+
+    // Use $addToSet to add the sleipner to the user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { sleipner: sleipnerId } },
+      { new: true }
+    )
+      .populate("sleipner", "name email avatar _id")
+      .exec();
+
+    // Check if the user is not found
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Remove sensitive data from the user and return the updated user
+    return removeRsUnDataFormUser(updatedUser);
+  } catch (error) {
+    // Check if the error is an instance of AppError
+    if (error instanceof AppError) {
+      // If the error is already an instance of AppError, rethrow it
+      throw error;
+    } else {
+      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+/**
+ * Remove a sleipner reference from a user document and return a success message.
+ *
+ * @param {string} userId - The ID of the user from whom the sleipner will be removed.
+ * @param {string} sleipnerId - The ID of the sleipner to be removed from the user.
+ * @returns {Promise<{ message: string }>} - A Promise that resolves to a success message.
+ * @throws {AppError} If an unexpected error occurs during the process.
+ */
+const deleteSlepiner = async (userId, sleipnerId) => {
+  try {
+    // Use the $pull operator to remove the sleipner from the user's sleipner array
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { sleipner: sleipnerId } },
+      { new: true }
+    );
+
+    // Check if the user is not found
+    if (!updatedUser) {
+      throw new AppError("User not found", 404);
+    }
+
+    // Return a success message
+    return { message: "Delete Successfully" };
+  } catch (error) {
+    // Check if the error is an instance of AppError
+    if (error instanceof AppError) {
+      // If the error is already an instance of AppError, rethrow it
+      throw error;
+    } else {
+      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
 module.exports = {
   userProfile,
   profileUpdate,
   passwordUpdate,
+  addSleipner,
+  deleteSlepiner,
 };
