@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const {
   uploadImage,
   deleteImageFromCloudinary,
+  imageUpdoad,
 } = require("../services/cloudinaryService");
 const userService = require("../services/userService");
 const removeRsUnDataFormUser = require("../utils/removeRsUnDataFormUser");
@@ -191,6 +192,47 @@ const profilePictureUpdate = (req, res, next) => {
   });
 };
 
+/**
+ * Middleware for adding a reference to a sleipnerUser in the currently authenticated user's document.
+ * @param {object} req - The Express request object.
+ * @param {object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ */
+const addSleipner = async (req, res, next) => {
+  try {
+    // Call the userService to add a sleipnerUser reference to the user document
+    const user = await userService.addSleipner(req.user._id, req.body.id);
+
+    // Respond with a 200 OK status and the updated user document in JSON format
+    res.status(200).json(user);
+  } catch (error) {
+    // Pass any errors to the next middleware for error handling
+    next(error);
+  }
+};
+
+/**
+ * Middleware for removing a sleipner reference from a user document and responding with a success message.
+ *
+ * @param {object} req - The Express request object.
+ * @param {object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ */
+const deleteSlepiner = async (req, res, next) => {
+  try {
+    const taskId = req.params.sleipnerId;
+
+    // Call the userService to remove a sleipner reference from the user document
+    const message = await userService.deleteSlepiner(req.user._id, taskId);
+
+    // Respond with a 200 OK status and the success message in JSON format
+    res.status(200).json(message);
+  } catch (error) {
+    // Pass any errors to the next middleware for error handling
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -198,4 +240,6 @@ module.exports = {
   profileUpdate,
   passwordUpdate,
   profilePictureUpdate,
+  addSleipner,
+  deleteSlepiner,
 };
