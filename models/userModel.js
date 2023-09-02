@@ -55,10 +55,8 @@ const userSchema = new mongoose.Schema(
         color: String,
       },
     ],
-    task: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Task",
-    },
+
+    sleipner: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
