@@ -232,10 +232,49 @@ const deleteSlepiner = async (userId, sleipnerId) => {
   }
 };
 
+/**
+ * Search for users based on a query string.
+ *
+ * @param {string} searchQuery - The query string to search for users.
+ * @param {number} page - The page number for pagination.
+ * @param {number} perPage - The number of users to return per page.
+ * @returns {Promise<Array>} A Promise that resolves to an array of user objects.
+ * @throws {AppError} If an error occurs during the search.
+ */
+const userSearch = async (searchQuery, page, perPage) => {
+  try {
+    // Calculate the number of documents to skip based on pagination parameters
+    const skip = (page - 1) * perPage;
+
+    const users = await User.find({
+      $or: [
+        { name: { $regex: `.*${searchQuery}.*`, $options: "i" } },
+        { email: { $regex: `.*${searchQuery}.*`, $options: "i" } },
+      ],
+    })
+      .skip(skip) // Skip the specified number of documents for pagination
+      .limit(perPage) // Limit the number of documents returned per page
+      .select("name avatar email"); // Select specific fields from the user documents
+
+    // Return the array of user objects matching the search query
+    return users;
+  } catch (error) {
+    // Check if the error is an instance of AppError
+    if (error instanceof AppError) {
+      // If the error is already an instance of AppError, rethrow it
+      throw error;
+    } else {
+      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
 module.exports = {
   userProfile,
   profileUpdate,
   passwordUpdate,
   addSleipner,
   deleteSlepiner,
+  userSearch,
 };

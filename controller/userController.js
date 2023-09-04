@@ -233,6 +233,34 @@ const deleteSlepiner = async (req, res, next) => {
   }
 };
 
+/**
+ * Search for users based on a query string.
+ *
+ * @param {import('express').Request} req - The Express request object.
+ * @param {import('express').Response} res - The Express response object.
+ * @param {import('express').NextFunction} next - The next middleware function.
+ * @returns {Promise<void>} A Promise that resolves when the operation is complete.
+ */
+const userSearch = async (req, res, next) => {
+  try {
+    const searchQuery = req.query.nameOremail;
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 10;
+    console.log(searchQuery);
+    console.log(page);
+    console.log(perPage);
+
+    // Call the user service to perform the search
+    const users = await userService.userSerch(searchQuery, page, perPage);
+
+    // Send a JSON response with the search results
+    res.status(200).json(users);
+  } catch (error) {
+    // If an error occurs, pass it to the next middleware or error handler
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -242,4 +270,5 @@ module.exports = {
   profilePictureUpdate,
   addSleipner,
   deleteSlepiner,
+  userSearch,
 };

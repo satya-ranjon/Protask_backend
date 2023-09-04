@@ -6,6 +6,7 @@ const {
   profilePictureUpdate,
   addSleipner,
   deleteSlepiner,
+  userSearch,
 } = require("../controller/userController");
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.patch("/update-password", passwordUpdate);
 router.patch("/update-profile-picture", profilePictureUpdate);
 router.patch("/sleipner", addSleipner);
 router.delete("/sleipner/:sleipnerId", deleteSlepiner);
+router.get("/search", userSearch);
 
 module.exports = router;
