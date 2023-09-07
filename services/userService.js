@@ -184,7 +184,7 @@ const addSleipner = async (userId, sleipnerId) => {
     }
 
     // Remove sensitive data from the user and return the updated user
-    return removeRsUnDataFormUser(updatedUser);
+    return { message: "Sleipner Add Successfully" };
   } catch (error) {
     // Check if the error is an instance of AppError
     if (error instanceof AppError) {
