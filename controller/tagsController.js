@@ -1,3 +1,4 @@
+const Activate = require("../models/activatesModel");
 const tagsService = require("../services/tagsService");
 
 /**
@@ -11,6 +12,26 @@ const createTags = async (req, res, next) => {
   try {
     // Call the tagsService.createTags function to create a new tag for the user
     const tags = await tagsService.createTags(req.user._id, req.body);
+
+    if (tags.id) {
+      const activate = new Activate({
+        userId: req.user._id,
+        type: "tags",
+        title: "New Tag",
+        dis: [
+          {
+            bold: true,
+            text: tags.name,
+          },
+          {
+            bold: false,
+            text: `new tag create`,
+          },
+        ],
+      });
+
+      await activate.save();
+    }
 
     // Respond with the created tag data
     res.status(200).json(tags);
