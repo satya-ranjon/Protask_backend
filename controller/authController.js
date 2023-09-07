@@ -1,3 +1,4 @@
+const Activate = require("../models/activatesModel");
 const authService = require("../services/authService");
 
 /**
