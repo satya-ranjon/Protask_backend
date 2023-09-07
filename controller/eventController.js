@@ -1,3 +1,4 @@
+const Activate = require("../models/activatesModel");
 const eventService = require("../services/eventService");
 
 /**
@@ -21,6 +22,27 @@ const createEvent = async (req, res, next) => {
       endtime,
       sleipner,
     });
+
+    if (event._id) {
+      const activate = new Activate({
+        userId: userId,
+        type: "event",
+        title: "New Event",
+        activateId: event._id,
+        dis: [
+          {
+            bold: true,
+            text: title,
+          },
+          {
+            bold: false,
+            text: `create a new event`,
+          },
+        ],
+      });
+
+      await activate.save();
+    }
 
     // Respond with the created event object
     res.status(201).json(event);
@@ -57,6 +79,27 @@ const updateEvent = async (req, res, next) => {
       },
       eventIdToUpdate
     );
+
+    if (updatedEvent._id) {
+      const activate = new Activate({
+        userId: req.user._id,
+        type: "event",
+        title: "Update Event",
+        activateId: updatedEvent._id,
+        dis: [
+          {
+            bold: true,
+            text: title,
+          },
+          {
+            bold: false,
+            text: `this event is update`,
+          },
+        ],
+      });
+
+      await activate.save();
+    }
 
     // Respond with the updated event object
     res.status(200).json(updatedEvent);
