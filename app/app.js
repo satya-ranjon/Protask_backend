@@ -6,6 +6,7 @@ const userRoutes = require("../routers/userRoutes");
 const taskRoutes = require("../routers/taskRoutes");
 const tagsRoutes = require("../routers/tagsRoutes");
 const eventRoutes = require("../routers/eventRoutes");
+const activateRoutes = require("../routers/activateRoutes");
 const {
   catchAllUndefinedRoutes,
   globalErrorHandler,
@@ -27,6 +28,7 @@ app.use("/api/user/", userRoutes);
 app.use("/api/task/", taskRoutes);
 app.use("/api/tags/", tagsRoutes);
 app.use("/api/event/", eventRoutes);
+app.use("/api/activates/", activateRoutes);
 
 // handling undefined routes
 app.use(catchAllUndefinedRoutes);
