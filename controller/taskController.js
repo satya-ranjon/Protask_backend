@@ -1,3 +1,4 @@
+const Activate = require("../models/activatesModel");
 const taskService = require("../services/taskService");
 
 /**
@@ -15,6 +16,21 @@ const taskCreate = async (req, res, next) => {
 
     // Call the taskService to create a new task
     const task = await taskService.createTask(user);
+    if (task._id) {
+      const activate = new Activate({
+        userId: req.user._id,
+        type: "task",
+        title: "New Task",
+        dis: [
+          {
+            bold: false,
+            text: `Create a new task`,
+          },
+        ],
+      });
+
+      await activate.save();
+    }
 
     // Respond with a success message and the created task
     res.status(200).json({
