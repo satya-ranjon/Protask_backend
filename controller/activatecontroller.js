@@ -1,3 +1,5 @@
+const Activate = require("../models/activatesModel");
+
 /**
  * Get all activates for a specific user.
  *
@@ -9,7 +11,14 @@
  */
 const getAllActivate = async (req, res, next) => {
   try {
-    const activates = await Activate.find({ userId: req.user._id });
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 10;
+    const skips = (page - 1) * perPage;
+
+    const activates = await Activate.find({ userId: req.user._id })
+      .skip(skips)
+      .limit(perPage);
+
     res.status(200).json(activates);
   } catch (error) {
     next(error);
