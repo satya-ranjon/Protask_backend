@@ -1,5 +1,6 @@
 const Activate = require("../models/activatesModel");
 const authService = require("../services/authService");
+var parser = require("ua-parser-js");
 
 /**
  * Register a new user.
@@ -40,7 +41,35 @@ const loginUser = async (req, res, next) => {
 
     // Call the userService.loginUser function to handle user login
     const user = await authService.loginUser(email, password);
+    var { browser, os } = parser(req.headers["user-agent"]);
 
+    if (user.user._id) {
+      const activate = new Activate({
+        userId: user.user._id,
+        type: "login",
+        title: "Login Your Account",
+        dis: [
+          {
+            bold: true,
+            text: `${os.name}-${os.version}`,
+          },
+          {
+            bold: false,
+            text: `or`,
+          },
+          {
+            bold: true,
+            text: `${browser.name}-${browser.version}`,
+          },
+          {
+            bold: false,
+            text: `login your account`,
+          },
+        ],
+      });
+
+      await activate.save();
+    }
     // Send a success response with the generated token
     res.status(200).json({
       status: "success",
