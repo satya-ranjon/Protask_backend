@@ -246,17 +246,41 @@ const userSearch = async (req, res, next) => {
     const searchQuery = req.query.nameOremail;
     const page = parseInt(req.query.page) || 1;
     const perPage = parseInt(req.query.perPage) || 10;
-    console.log(searchQuery);
-    console.log(page);
-    console.log(perPage);
-
     // Call the user service to perform the search
-    const users = await userService.userSerch(searchQuery, page, perPage);
+    const users = await userService.userSearch(searchQuery, page, perPage);
 
     // Send a JSON response with the search results
     res.status(200).json(users);
   } catch (error) {
     // If an error occurs, pass it to the next middleware or error handler
+    next(error);
+  }
+};
+
+/**
+ * Controller function to retrieve a paginated list of Sleipner documents related to the authenticated user.
+ *
+ * @param {Object} req - The Express.js request object.
+ * @param {Object} res - The Express.js response object.
+ * @param {function} next - The next middleware function.
+ */
+const getAllSleipner = async (req, res, next) => {
+  try {
+    // Parse the query parameters for pagination, default to page 1 and 10 items per page.
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 10;
+
+    // Call the userService to retrieve Sleipner documents with pagination options.
+    const sleipners = await userService.getAllSleipner({
+      id: req.user._id, // The ID of the authenticated user.
+      skip: (page - 1) * perPage, // Calculate the number of documents to skip based on the page number.
+      limit: perPage, // Number of documents to return per page.
+    });
+
+    // Send the retrieved Sleipner documents as a JSON response.
+    res.status(200).json(sleipners);
+  } catch (error) {
+    // Forward any errors to the next middleware for error handling.
     next(error);
   }
 };
@@ -271,4 +295,5 @@ module.exports = {
   addSleipner,
   deleteSlepiner,
   userSearch,
+  getAllSleipner,
 };

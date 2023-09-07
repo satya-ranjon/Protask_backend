@@ -10,6 +10,7 @@ const removeRsUnDataFormUser = (user) => {
   delete userWithoutPassword.updatedAt;
   delete userWithoutPassword.tags;
   delete userWithoutPassword.__v;
+  delete userWithoutPassword.sleipner;
   return userWithoutPassword;
 };
 

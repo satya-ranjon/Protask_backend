@@ -270,6 +270,37 @@ const userSearch = async (searchQuery, page, perPage) => {
   }
 };
 
+/**
+ * Retrieves a specified number of Sleipner documents related to a user by their ID.
+ *
+ * @param {Object} options - An object containing options for retrieving Sleipner documents.
+ * @param {string} options.id - The ID of the user whose Sleipner documents should be retrieved.
+ * @param {number} options.skip - The number of Sleipner documents to skip before returning results.
+ * @param {number} options.limit - The maximum number of Sleipner documents to return.
+ * @returns {Promise<Array>} An array of Sleipner documents with selected fields (_id, email, avatar).
+ * @throws {AppError} If there's an error during the retrieval process.
+ */
+const getAllSleipner = async ({ id, skip, limit }) => {
+  try {
+    // Find the user by their ID and populate the Sleipner field with selected fields.
+    const user = await User.findById(id).populate({
+      path: "sleipner",
+      select: "_id email avatar",
+      options: { skip, limit },
+    });
+
+    // Return the Sleipner documents.
+    return user.sleipner;
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      throw error;
+    } else {
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
 module.exports = {
   userProfile,
   profileUpdate,
@@ -277,4 +308,5 @@ module.exports = {
   addSleipner,
   deleteSlepiner,
   userSearch,
+  getAllSleipner,
 };
