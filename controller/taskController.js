@@ -21,6 +21,8 @@ const taskCreate = async (req, res, next) => {
         userId: req.user._id,
         type: "task",
         title: "New Task",
+        activateId: task._id,
+
         dis: [
           {
             bold: false,

@@ -182,6 +182,7 @@ const addSleipner = async (userId, sleipnerId) => {
         userId: updatedUser._id,
         type: "sleipner",
         title: "Add New Sleipner",
+        activateId: sleipnerUser._id,
         dis: [
           {
             bold: true,

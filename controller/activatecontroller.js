@@ -16,6 +16,7 @@ const getAllActivate = async (req, res, next) => {
     const skips = (page - 1) * perPage;
 
     const activates = await Activate.find({ userId: req.user._id })
+      .sort({ createdAt: -1 })
       .skip(skips)
       .limit(perPage);
 
