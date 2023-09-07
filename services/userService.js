@@ -1,3 +1,4 @@
+const Activate = require("../models/activatesModel");
 const User = require("../models/userModel");
 const AppError = require("../utils/AppError");
 const removeRsUnDataFormUser = require("../utils/removeRsUnDataFormUser");
@@ -174,9 +175,27 @@ const addSleipner = async (userId, sleipnerId) => {
       userId,
       { $addToSet: { sleipner: sleipnerId } },
       { new: true }
-    )
-      .populate("sleipner", "name email avatar _id")
-      .exec();
+    );
+
+    if (updatedUser._id) {
+      const activate = new Activate({
+        userId: updatedUser._id,
+        type: "sleipner",
+        title: "Add New Sleipner",
+        dis: [
+          {
+            bold: true,
+            text: sleipnerUser.name,
+          },
+          {
+            bold: false,
+            text: "added your workspace",
+          },
+        ],
+      });
+
+      await activate.save();
+    }
 
     // Check if the user is not found
     if (!updatedUser) {
@@ -184,7 +203,7 @@ const addSleipner = async (userId, sleipnerId) => {
     }
 
     // Remove sensitive data from the user and return the updated user
-    return { message: "Sleipner Add Successfully" };
+    return { message: "Sleipner Add Successfully", status: 200 };
   } catch (error) {
     // Check if the error is an instance of AppError
     if (error instanceof AppError) {

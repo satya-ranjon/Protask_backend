@@ -3,7 +3,6 @@ const User = require("../models/userModel");
 const {
   uploadImage,
   deleteImageFromCloudinary,
-  imageUpdoad,
 } = require("../services/cloudinaryService");
 const userService = require("../services/userService");
 const removeRsUnDataFormUser = require("../utils/removeRsUnDataFormUser");
@@ -201,10 +200,10 @@ const profilePictureUpdate = (req, res, next) => {
 const addSleipner = async (req, res, next) => {
   try {
     // Call the userService to add a sleipnerUser reference to the user document
-    const user = await userService.addSleipner(req.user._id, req.body.id);
+    const message = await userService.addSleipner(req.user._id, req.body.id);
 
     // Respond with a 200 OK status and the updated user document in JSON format
-    res.status(200).json(user);
+    res.status(200).json(message);
   } catch (error) {
     // Pass any errors to the next middleware for error handling
     next(error);
