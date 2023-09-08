@@ -25,6 +25,10 @@ const taskCreate = async (req, res, next) => {
 
         dis: [
           {
+            bold: true,
+            text: `${task?.title || "Untitle"}`,
+          },
+          {
             bold: false,
             text: `Create a new task`,
           },
