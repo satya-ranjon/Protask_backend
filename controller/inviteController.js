@@ -11,26 +11,29 @@ const emailService = require("../services/emailService.js");
 const inviteSlipner = async (req, res, next) => {
   try {
     // Extract request body parameters
-    const { resiveremail, username, userimage, navigateLink } = req.body;
+    const { resiveremail, username, userimage, navigateLink, message } =
+      req.body;
 
     // Send an invitation email using the emailService
-    const message = await emailService.inviteSlipner({
+    const response = await emailService.inviteSlipner({
       resiveremail,
       username,
       userimage,
       navigateLink,
+      message,
     });
-    // const newInvite = new Invite({
-    //   senderEmail: inviteData.senderEmail,
-    //   recipientEmail: inviteData.recipientEmail,
-    //   message: inviteData.message,
-    //   status: customStatus, // Set the custom status here
-    // });
 
-    // await newInvite.save();
+    const newInvite = new Invite({
+      senderEmail: req.user.email,
+      recipientEmail: resiveremail,
+      message: message,
+      status: "pending",
+    });
+
+    await newInvite.save();
 
     // Respond with a success message
-    return res.status(200).json(message);
+    return res.status(200).json(response);
   } catch (error) {
     // Forward errors to the error handling middleware
     next(error);

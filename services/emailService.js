@@ -81,6 +81,7 @@ const inviteSlipner = async ({
   username,
   userimage,
   navigateLink,
+  message,
 }) => {
   try {
     // Check if required parameters are missing and throw an error if any are missing
@@ -104,7 +105,7 @@ const inviteSlipner = async ({
     <div style="display:flex;justify-content:start;margin-right:35px;gap:15px;align-items:center;margin-left:12px">
     <img src=${userimage} style="width:64px;height:64px;border-radius:50%" alt="" />
     <span style="font-size:40px">${username} has sent you an invitation!</span>
-    </div>
+    </div> <p>${message ? message : ""}</p>
     <a target="_blank" href=${navigateLink} style="font-size:35px;text-align:center;width:full;background-color:#df5c43;padding:5px 20px;display:block;width:fit-content;margin:20px;color:white">JOIN</a </html>
     `;
 
