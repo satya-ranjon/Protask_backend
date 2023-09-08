@@ -1,3 +1,4 @@
+const Activate = require("../models/activatesModel.js");
 const Invite = require("../models/inviteModal.js");
 const emailService = require("../services/emailService.js");
 
@@ -31,6 +32,24 @@ const inviteSlipner = async (req, res, next) => {
     });
 
     await newInvite.save();
+
+    const activate = new Activate({
+      userId: req.user._id,
+      type: "invite",
+      title: "Invite Sleipner",
+      dis: [
+        {
+          bold: true,
+          text: resiveremail,
+        },
+        {
+          bold: false,
+          text: `send you invite .`,
+        },
+      ],
+    });
+
+    await activate.save();
 
     // Respond with a success message
     return res.status(200).json(response);
