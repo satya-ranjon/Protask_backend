@@ -308,9 +308,12 @@ const getAllSleipner = async ({ id, skip, limit }) => {
       select: "_id email avatar",
       options: { skip, limit },
     });
+    const sleipnerCount = await User.findById(id);
+
+    const count = sleipnerCount.sleipner.length;
 
     // Return the Sleipner documents.
-    return user.sleipner;
+    return { sleipners: user.sleipner, count };
   } catch (error) {
     // Handle errors
     if (error instanceof AppError) {
