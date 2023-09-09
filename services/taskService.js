@@ -101,7 +101,7 @@ const getTask = async (taskId) => {
     // Find the task by its ID and populate user and assigned user data
     const task = await Task.findById(taskId)
       .populate("user", "name email avatar _id")
-      .populate("assignedUsers.userId", "name email avatar _id")
+      .populate("assignedUsers", "name email avatar _id")
       .exec();
 
     return task;

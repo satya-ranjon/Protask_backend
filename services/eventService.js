@@ -107,10 +107,9 @@ const deleteEvent = async (id) => {
 const getEventsGroupedByDate = async (userId) => {
   try {
     // Fetch events from the database for the specified user
-    const events = await Event.find({ userId }).populate(
-      "sleipner",
-      "name email avatar _id"
-    );
+    const events = await Event.find({
+      $or: [{ userId: userId }, { sleipner: userId }],
+    }).populate("sleipner", "name email avatar _id");
 
     // Group events by date using the reduce() method
     const eventsGroupedByDate = events.reduce((acc, cur) => {
