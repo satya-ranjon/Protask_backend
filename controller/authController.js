@@ -14,14 +14,10 @@ const registerUser = async (req, res, next) => {
     const { name, email, password } = req.body;
 
     // Call the userService.registerUser function to handle user registration
-    const user = await authService.registerUser(name, email, password);
+    const message = await authService.registerUser(name, email, password);
 
     // Send a success response with the newly registered user data
-    res.status(201).json({
-      status: "success",
-      message: "User registered successfully!",
-      ...user,
-    });
+    res.status(201).json(message);
   } catch (err) {
     // Pass the error to the next middleware for centralized error handling
     next(err);
@@ -82,7 +78,32 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+/**
+ * Handle the verification of a user's account using a verification token.
+ *
+ * @param {import('express').Request} req - The Express request object.
+ * @param {import('express').Response} res - The Express response object.
+ * @param {import('express').NextFunction} next - The Express next function.
+ * @returns {Promise<void>} A Promise that handles the account verification process and sends a response.
+ */
+const accountVerify = async (req, res, next) => {
+  try {
+    // Extract the verification token from the request parameters
+    const token = req.params.token;
+
+    // Verify the user's account using the authService
+    const message = await authService.accountVerify(token);
+
+    // Respond with a success message
+    res.status(200).json(message);
+  } catch (error) {
+    // Forward errors to the error handling middleware
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  accountVerify,
 };

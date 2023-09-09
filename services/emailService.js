@@ -127,7 +127,64 @@ const inviteSlipner = async ({
   }
 };
 
+/**
+ * Send an email for account verification.
+ *
+ * @param {object} options - Options for sending the verification email.
+ * @param {string} options.token - The verification token.
+ * @param {string} options.email - The recipient's email address.
+ * @param {string} options.username - The username of the recipient.
+ * @returns {Promise<void>} A Promise that sends the verification email.
+ * @throws {AppError} If any of the required options are missing or if there's an error during
+ * the email sending process.
+ */
+const emailVerifySend = async ({ token, email, username }) => {
+  try {
+    // Check if required parameters are missing and throw an error if any are missing
+    if (!token) {
+      throw new AppError("token is required", 400);
+    }
+    if (!email) {
+      throw new AppError("email is required", 400);
+    }
+    if (!username) {
+      throw new AppError("username is required", 400);
+    }
+
+    // Create the HTML email body using provided information
+    const templateBody = `<html>
+  <body>
+<img style="width:64px;margin-left:400px" src="https://res.cloudinary.com/dcpbu1ffy/image/upload/v1694174827/image-1_py9ctm.png" alt="logo" />
+<p style="font-size:28px;font-weight:500">Dear ${username},</p>
+<p style="font-size:18px;font-weight:500">
+Thank you for choosing to create an account with Daily Routine.
+We're excited to <br />
+Are you on board? <br /><br />To ensure the security of your account and
+complete the registration process, please verify <br />
+your email address by clicking the link below: <br /><br />
+</p>
+<a target="_blank" href="${process.env.EMAIL_VERIFY_NAVIGATE_URL}/${token}" style="background-color: #0cc; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block">Verify</a>
+</body>
+</html>`;
+
+    // Send the email using the sendMail function
+    await sendMail({
+      resiveremail: email,
+      emailbody: templateBody,
+      subject: "Verify Your Account - Daily Routine",
+    });
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      throw error;
+    } else {
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
 module.exports = {
   sendMail,
   inviteSlipner,
+  emailVerifySend,
 };

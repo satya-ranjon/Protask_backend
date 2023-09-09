@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 const AppError = require("../utils/AppError");
 const removeRsUnDataFormUser = require("../utils/removeRsUnDataFormUser");
+const { emailVerifySend } = require("./emailService");
 
 /**
  * Hashes the provided password using bcrypt.
@@ -43,6 +44,15 @@ const generateAuthToken = (userId) => {
   return token;
 };
 
+const generateEmailVerifyToken = (userId) => {
+  // Create a JWT token containing the user ID, signed with the JWT_SECRET and set to expire in 30 hours
+  const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+
+  return token;
+};
+
 /**
  * Registers a new user with the provided name, email, and password.
  * @param {string} name - The name of the user to be registered.
@@ -71,17 +81,24 @@ const registerUser = async (name, email, password) => {
     const savedUser = await newUser.save();
 
     // Generate and attach the JWT token to the user object
-    const token = generateAuthToken(savedUser._id);
+    const token = generateEmailVerifyToken(savedUser._id);
+
+    await emailVerifySend({
+      token: token.split(".").join("---"),
+      email: savedUser.email,
+      username: savedUser.name,
+    });
 
     // Return the user & generated token
-    return { user: removeRsUnDataFormUser(savedUser), token };
+    return {
+      status: "success",
+      message: "User registered successfully! verify your email",
+    };
   } catch (error) {
     // The catch block will handle any other errors during login
     if (error instanceof AppError) {
-      // Re-throw AppError instances (such as "User Not Found" or "Invalid email or password" errors)
       throw error;
     } else {
-      // If there's any other error during registration, throw a generic AppError
       throw new AppError(
         "Failed to register user. Please try again later.",
         500
@@ -141,10 +158,55 @@ const loginUser = async (email, password) => {
   }
 };
 
+/**
+ * Verify a user's account using a verification token.
+ *
+ * @param {string} token - The verification token to verify the user's account.
+ * @returns {Promise<{ message: string }>} A Promise that resolves with a success message
+ * when the account is verified or rejects with an error.
+ * @throws {AppError} If the token is missing, invalid, expired, or if there's an error during
+ * the verification process.
+ */
+const accountVerify = async (token) => {
+  try {
+    // Check if the token is missing and throw an error if it's missing
+    if (!token) {
+      throw new AppError("token is required", 400);
+    }
+
+    // Verify the token using the JWT_SECRET from the environment variables
+    const { _id, exp } = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!_id) {
+      // If the token does not contain a valid user id, return an error.
+      throw new AppError("Invalid credentials.", 403);
+    }
+
+    if (exp && Date.now() >= exp * 1000) {
+      // If the token has an expiration time and it's expired, return an error.
+      throw new AppError("Token has expired.", 401);
+    }
+
+    // Update the user's account to mark it as verified
+    await User.findByIdAndUpdate(_id, { verified: true });
+
+    return { message: "Account verified successfully!" };
+  } catch (error) {
+    // Handle errors
+    if (error instanceof AppError) {
+      throw error;
+    } else {
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
 module.exports = {
   generateAuthToken,
   hashPassword,
   passwordCompare,
   registerUser,
   loginUser,
+  generateEmailVerifyToken,
+  accountVerify,
 };
