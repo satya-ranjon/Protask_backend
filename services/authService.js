@@ -109,6 +109,11 @@ const loginUser = async (email, password) => {
       );
     }
 
+    if (!user.verified) {
+      // If the user not verified return an error.
+      throw new AppError("Account is not verified, verify your email!", 403);
+    }
+
     // Compare the provided password with the stored hashed password
     const isPasswordValid = await passwordCompare(password, user.password);
 

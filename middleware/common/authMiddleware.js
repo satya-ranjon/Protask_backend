@@ -50,6 +50,11 @@ const isAuthenticated = async (req, _res, next) => {
       return next(new AppError("User not found.", 404));
     }
 
+    if (!user.verified) {
+      // If the user not verified return an error.
+      return next(new AppError("Account is not verified", 403));
+    }
+
     // Attach the user object to the request for further use in the route handler
     req.user = removeRsUnDataFormUser(user);
 

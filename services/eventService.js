@@ -53,7 +53,7 @@ const updateEvent = async (data, eventId) => {
     event.date = data.date || event.date;
     event.starttime = data.starttime || event.starttime;
     event.endtime = data.endtime || event.endtime;
-    event.sleipner = [...event.sleipner, ...data.sleipner];
+    event.sleipner = data.sleipner;
 
     // Save the updated event
     const updatedEvent = await event.save();
@@ -107,7 +107,10 @@ const deleteEvent = async (id) => {
 const getEventsGroupedByDate = async (userId) => {
   try {
     // Fetch events from the database for the specified user
-    const events = await Event.find({ userId });
+    const events = await Event.find({ userId }).populate(
+      "sleipner",
+      "name email avatar _id"
+    );
 
     // Group events by date using the reduce() method
     const eventsGroupedByDate = events.reduce((acc, cur) => {
@@ -136,7 +139,10 @@ const getEventsGroupedByDate = async (userId) => {
 
 const getEvent = async (eventId) => {
   try {
-    const event = await Event.findById(eventId);
+    const event = await Event.findById(eventId).populate(
+      "sleipner",
+      "name email _id avatar"
+    );
     return event;
   } catch (error) {
     // Handle errors

@@ -305,7 +305,7 @@ const getAllSleipner = async ({ id, skip, limit }) => {
     // Find the user by their ID and populate the Sleipner field with selected fields.
     const user = await User.findById(id).populate({
       path: "sleipner",
-      select: "_id email avatar",
+      select: "_id email avatar name",
       options: { skip, limit },
     });
     const sleipnerCount = await User.findById(id);
