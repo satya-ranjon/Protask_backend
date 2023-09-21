@@ -109,7 +109,9 @@ const getEventsGroupedByDate = async (userId) => {
     // Fetch events from the database for the specified user
     const events = await Event.find({
       $or: [{ userId: userId }, { sleipner: userId }],
-    }).populate("sleipner", "name email avatar _id");
+    })
+      .populate("sleipner", "name email avatar.64.url _id")
+      .select("title sleipner date");
 
     // Group events by date using the reduce() method
     const eventsGroupedByDate = events.reduce((acc, cur) => {
