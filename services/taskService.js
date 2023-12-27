@@ -139,7 +139,7 @@ const taskUpdate = async (taskId, data) => {
     const task = await Task.findById(taskId);
 
     // Update task properties based on the provided data or keep existing values
-    task.name = data.name;
+    task.name = data.name || task.name;
     task.description = data.description || task.description;
     task.tags = data.tags || task.tags;
     task.assignedUsers = data.assignedUsers || task.assignedUsers;

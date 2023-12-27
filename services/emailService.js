@@ -44,7 +44,7 @@ const sendMail = async ({ resiveremail, emailbody, subject }) => {
 
     // Define the email content
     const send = {
-      from: `Daily Routine 💖🤖 ${process.env.SENDER_EMAIL}`,
+      from: `Protask 💖🤖 ${process.env.SENDER_EMAIL}`,
       to: resiveremail,
       subject: subject,
       html: emailbody,
@@ -113,7 +113,7 @@ const inviteSlipner = async ({
     await sendMail({
       resiveremail: resiveremail,
       emailbody: templateBody,
-      subject: "Join the Daily Routine",
+      subject: "Join the Protask",
     });
 
     return { message: "Invite sent successfully", status: 200 };
@@ -157,7 +157,7 @@ const emailVerifySend = async ({ token, email, username }) => {
 <img style="width:64px;margin-left:400px" src="https://res.cloudinary.com/dcpbu1ffy/image/upload/v1694174827/image-1_py9ctm.png" alt="logo" />
 <p style="font-size:28px;font-weight:500">Dear ${username},</p>
 <p style="font-size:18px;font-weight:500">
-Thank you for choosing to create an account with Daily Routine.
+Thank you for choosing to create an account with Protask.
 We're excited to <br />
 Are you on board? <br /><br />To ensure the security of your account and
 complete the registration process, please verify <br />
@@ -171,7 +171,7 @@ your email address by clicking the link below: <br /><br />
     await sendMail({
       resiveremail: email,
       emailbody: templateBody,
-      subject: "Verify Your Account - Daily Routine",
+      subject: "Verify Your Account - Protask",
     });
   } catch (error) {
     // Handle errors
