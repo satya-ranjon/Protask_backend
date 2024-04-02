@@ -22,6 +22,11 @@ dotenv.config();
 app.use(express.json());
 app.use(cors({ origin: process.env.CORS_URL }));
 
+app.get("/api", (_req, res, _next) => {
+  console.log("server is running...");
+  res.send("server is running..");
+});
+
 // Define routes
 app.use("/api/auth/", authRoutes);
 
